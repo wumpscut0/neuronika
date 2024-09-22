@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "neuronika"
+version = "0.1.0"
+description = ""
+authors = ["Всеволод Богдашов <industrial@inbox.eu>"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.12"
+PyQt6 = "^6.7.1"
+black = "^24.8.0"
+passlib = "^1.7.4"
+auto-py-to-exe = {version = "^2.44.1", python = ">=3.12,<3.13"}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
