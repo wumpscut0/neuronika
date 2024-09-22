@@ -1,6 +1,8 @@
 import sys
 import webbrowser
 from collections.abc import Callable
+from pathlib import Path
+from os.path import dirname
 
 from PyQt6.QtCore import Qt, QVariantAnimation, QSize
 from PyQt6.QtWidgets import (
@@ -24,6 +26,7 @@ import settings
 from tools import PasswordManager
 
 STACK = QStackedLayout()
+BASEDIR = dirname(__file__)
 
 
 class Input(QVBoxLayout):
@@ -151,14 +154,13 @@ class TopPanelButtons(QWidget):
 
 class TopPanelButton(QLabel):
     size = 25
-    base_dir = "icons/main_top_panel/buttons/"
+    base_dir = Path(BASEDIR, "icons", "main_top_panel", "buttons")
 
     def __init__(self, file_name: str, func: Callable | None = None):
         super().__init__()
         self.func = func
-        self.filename = f"{self.base_dir}{file_name}"
 
-        self.pixmap = QPixmap(self.filename).scaled(self.size, self.size)
+        self.pixmap = QPixmap(str(self.base_dir / file_name)).scaled(self.size, self.size)
 
         self.setPixmap(self.pixmap)
         self.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -171,9 +173,9 @@ class TopPanelButton(QLabel):
 
 class TopPanel(QWidget):
     height = 60
-    base_dir = "icons/main_top_panel/"
-    logo_file_path = f"{base_dir}/logo.PNG"
-    user_file_path = f"{base_dir}/user.PNG"
+    base_dir = Path(BASEDIR, "icons", "main_top_panel")
+    logo_file_path = str(base_dir / "logo.PNG")
+    user_file_path = str(base_dir/ "user.PNG")
     header = "КОГНИТИВНАЯ РЕАБИЛИТАЦИЯ"
     left_panel_color = "#446c7c"
     right_panel_color = "#365b66"
@@ -224,12 +226,11 @@ class MainIcon(QLabel):
     animation_duration = 200
     start_size = 70
     end_size = 90
-    base_dir = "icons/main_quests/"
+    base_dir = Path(BASEDIR, "icons", "main_quests")
 
     def __init__(self, file_name: str):
         super().__init__()
-        self.filename = f"{self.base_dir}{file_name}"
-
+        self.filename = str(self.base_dir / file_name)
         self.animation = QVariantAnimation()
         self.animation.setDuration(self.animation_duration)
         self.animation.valueChanged.connect(lambda value: self.update_pixmap(value))
@@ -350,10 +351,9 @@ class InfoBlock(QWidget):
 
 
 class Texture(QWidget):
-    texture_file_path = "icons/texture.jpg"
+    texture_file_path = str(Path(BASEDIR, "icons", "texture.jpg").resolve())
     header = "ГРУППЫ УПРАЖНЕНИЙ"
     header_color = TopPanel.left_panel_color
-
     def __init__(self):
         super().__init__()
         self.layout = QVBoxLayout()
@@ -401,7 +401,7 @@ class QuestWindow(QWidget):
         (2, 2): "timer.PNG",
     }
     button_color = "#499477"
-    base_dir = "icons/main_quests/generic/"
+    base_dir = Path(BASEDIR, "icons", "main_quests", "generic")
 
     def __init__(self):
         super().__init__()
@@ -421,7 +421,7 @@ class QuestWindow(QWidget):
             file_name = self.icons_data.get((y, x))
             icon = QLabel()
             if file_name:
-                icon.setPixmap(QPixmap(f"{self.base_dir}{file_name}"))
+                icon.setPixmap(QPixmap(str(self.base_dir / file_name)))
             icon.setAlignment(Qt.AlignmentFlag.AlignCenter)
             icon.setStyleSheet(f"border: 1px solid black")
             icon.setFixedSize(QSize(300, 150))
@@ -439,6 +439,7 @@ class QuestWindow(QWidget):
 
         self.wrapper = QWidget()
         self.wrapper.setLayout(QHBoxLayout())
+        self.wrapper.setStyleSheet("background-color: white")
         self.wrapper.layout().addWidget(self)
         self.wrapper.layout().addWidget(self.button_continue)
         self.wrapper.layout().setAlignment(Qt.AlignmentFlag.AlignCenter)
