@@ -2,7 +2,7 @@ import sys
 import webbrowser
 from collections.abc import Callable
 from pathlib import Path
-from os.path import dirname
+from os.path import dirname, join
 
 from PyQt6.QtCore import Qt, QVariantAnimation, QSize
 from PyQt6.QtWidgets import (
@@ -29,6 +29,13 @@ from tools import PasswordManager
 
 STACK = QStackedLayout()
 BASEDIR = dirname(__file__)
+
+try:
+    from ctypes import windll
+    myappid = 'mycompany.myproduct.subproduct.version'
+    windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+except ImportError:
+    pass
 
 
 class Input(QVBoxLayout):
@@ -530,11 +537,13 @@ class MainWindow(QMainWindow):
         STACK.addWidget(LoginWindow())
         STACK.addWidget(MenuWindow())
         STACK.addWidget(QuestWindow().wrapper_2)
-        STACK.setCurrentIndex(1)
+        STACK.setCurrentIndex(0)
 
 
 def main():
     app = QApplication(sys.argv)
+
+    app.setWindowIcon(QIcon(str(Path(BASEDIR, "app.ico").resolve())))
 
     window = MainWindow()
     window.show()
